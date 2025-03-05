@@ -10,10 +10,26 @@ const StyledWrapper = styled.div`
   padding: 24px;
 `;
 
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+`;
+
+const Th = styled.th`
+  background: #f4f4f4;
+  padding: 10px;
+  border: 1px solid #ddd;
+`;
+
+const Td = styled.td`
+  padding: 10px;
+  border: 1px solid #ddd;
+`;
+
 export const App = () => {
   const dispatch = useAppDispatch();
   const users = useTypedSelector(selectUsers);
-  const subsetOfUsers = users.slice(0, 10); // TODO: Remove this when you have found a better way to not show all users at once
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -27,20 +43,28 @@ export const App = () => {
 
       <h2>Create your app here!</h2>
       <p>Let's get you started:</p>
-      <table>
+      <Table>
         <thead>
           <tr>
-            <th>Name</th>
+            <Th>ID</Th>
+            <Th>Name</Th>
+            <Th>Email</Th>
+            <Th>Gender</Th>
+            <Th>IP Address</Th>
           </tr>
         </thead>
         <tbody>
-          {subsetOfUsers.map((user) => (
+          {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.first_name}</td>
+              <Td>{user.id}</Td>
+              <Td>{user.first_name} {user.last_name}</Td>
+              <Td>{user.email}</Td>
+              <Td>{user.gender}</Td>
+              <Td>{user.ip_address}</Td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </StyledWrapper>
   );
 };
