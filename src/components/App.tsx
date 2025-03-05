@@ -1,31 +1,15 @@
 import React, { useEffect } from "react";
-import styled from "styled-components";
+// I have added the FixedSizeList to render a large list of users with a fixed item size, so it is gradually rendered as the user scrolls
+import { FixedSizeList as List } from "react-window";
 
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useTypedSelector } from "../hooks/useTypedSelector";
 import { fetchUsers, selectUsers } from "../redux/user/userSlice";
 import { GlobalStyles } from "./GlobalStyles/GlobalStyles";
 
-const StyledWrapper = styled.div`
-  padding: 24px;
-`;
+import TableRow from "./Table/TableRow";
+import { StyledWrapper, Table, TableHeader, Row, Cell } from "./Table/TableStyles";
 
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-`;
-
-const Th = styled.th`
-  background: #f4f4f4;
-  padding: 10px;
-  border: 1px solid #ddd;
-`;
-
-const Td = styled.td`
-  padding: 10px;
-  border: 1px solid #ddd;
-`;
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -44,26 +28,24 @@ export const App = () => {
       <h2>Create your app here!</h2>
       <p>Let's get you started:</p>
       <Table>
-        <thead>
-          <tr>
-            <Th>ID</Th>
-            <Th>Name</Th>
-            <Th>Email</Th>
-            <Th>Gender</Th>
-            <Th>IP Address</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <Td>{user.id}</Td>
-              <Td>{user.first_name} {user.last_name}</Td>
-              <Td>{user.email}</Td>
-              <Td>{user.gender}</Td>
-              <Td>{user.ip_address}</Td>
-            </tr>
-          ))}
-        </tbody>
+        <TableHeader>
+          <Row>
+            <Cell>ID</Cell>
+            <Cell>Name</Cell>
+            <Cell>Email</Cell>
+            <Cell>Gender</Cell>
+            <Cell>IP Address</Cell>
+          </Row>
+        </TableHeader>
+        <List
+          height={600}
+          itemCount={users.length}
+          itemSize={40}
+          width={1440}
+          itemData={users}
+        >
+          {TableRow}
+        </List>
       </Table>
     </StyledWrapper>
   );
