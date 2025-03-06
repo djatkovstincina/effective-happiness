@@ -5,10 +5,11 @@ import {
 } from "@reduxjs/toolkit";
 
 import userReducer from "./user/userSlice";
+import blogReduser from "./blog/blogSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
-  // TODO: Add more reducers here if needed
+  blog: blogReduser,
 });
 
 export const setupStore = (preloadedState?: PreloadedState<RootState>) =>
