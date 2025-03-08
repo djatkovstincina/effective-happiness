@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { VariableSizeList as List } from "react-window";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useTypedSelector } from "../hooks/useTypedSelector";
@@ -9,6 +10,8 @@ import { GlobalStyles } from "./GlobalStyles/GlobalStyles";
 
 import TableRow from "./Table/TableRow";
 import { StyledWrapper, Table, TableHeader, Row, Cell } from "./Table/TableStyles";
+
+import BlogPostPage from "../pages/BlogPostPage";
 
 
 export const App = () => {
@@ -37,37 +40,44 @@ export const App = () => {
   const itemData = { users, expandedUser, handleRowClick, blogPosts };
 
   return (
-    <StyledWrapper>
-      <GlobalStyles />
+    <Router>
+      <StyledWrapper>
+        <GlobalStyles />
 
-      <h1>NaviPartner Tech Test</h1>
+        <h1>NaviPartner Tech Test</h1>
 
-      <h2>Create your app here!</h2>
-      <p>Let's get you started:</p>
-      <Table>
-        <TableHeader>
-          <Row>
-            <Cell>ID</Cell>
-            <Cell>Name</Cell>
-            <Cell>Email</Cell>
-            <Cell>Gender</Cell>
-            <Cell>IP Address</Cell>
-          </Row>
-        </TableHeader>
-        <List
-          ref={listRef}
-          height={600}
-          itemCount={users.length}
-          itemSize={getItemSize}
-          estimatedItemSize={40}
-          width={1440}
-          itemData={itemData}
-        >
-          {({ index, style }) => (
-            <TableRow index={index} style={style} data={itemData} />
-          )}
-        </List>
-      </Table>
-    </StyledWrapper>
+        <h2>Create your app here!</h2>
+        <p>Let's get you started:</p>
+        <Routes>
+          <Route path="/" element={
+            <Table>
+              <TableHeader>
+                <Row>
+                  <Cell>ID</Cell>
+                  <Cell>Name</Cell>
+                  <Cell>Email</Cell>
+                  <Cell>Gender</Cell>
+                  <Cell>IP Address</Cell>
+                </Row>
+              </TableHeader>
+              <List
+                ref={listRef}
+                height={600}
+                itemCount={users.length}
+                itemSize={getItemSize}
+                estimatedItemSize={40}
+                width={1440}
+                itemData={itemData}
+              >
+                {({ index, style }) => (
+                  <TableRow index={index} style={style} data={itemData} />
+                )}
+              </List>
+            </Table>
+          } />
+          <Route path="/blog/:postId" element={<BlogPostPage />} />
+        </Routes>
+      </StyledWrapper>
+    </Router>
   );
 };

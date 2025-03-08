@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { User } from "../../data/data";
 import { BlogPost } from "../../data/data";
@@ -16,6 +17,7 @@ interface ItemData {
 const TableRow = memo(({ index, style, data }: { index: number; style: React.CSSProperties; data: ItemData }) => {
     const { users, expandedUser, handleRowClick, blogPosts } = data;
     const user = users[index];
+    const navigate = useNavigate();
 
     const rowStyle = index % 2 === 0 ? { backgroundColor: '#f9f9f9' } : { backgroundColor: '#fff' };
     const isExpanded = expandedUser === user.id;
@@ -35,7 +37,12 @@ const TableRow = memo(({ index, style, data }: { index: number; style: React.CSS
                         {userPosts.length > 0 ? (
                             <ul style={{ padding: "4px 10px 4px 20px" }}>
                                 {userPosts.map((post: BlogPost) => (
-                                    <li key={post.id} style={{ padding: "10px" }}>
+                                    <li key={post.id} style={{ padding: "10px" }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigate(`/blog/${post.id}`);
+                                        }}
+                                    >
                                         <h4>{post.title.substring(0, 30)}...</h4>
                                         <p>{post.body.substring(0, 100)}...</p>
                                     </li>
