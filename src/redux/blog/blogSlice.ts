@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { BlogPost, editBlogPost, getMembers } from "../../data/data";
+import { BlogPost, deleteBlogPost as deleteBlogPostApi,editBlogPost, getMembers } from "../../data/data";
 
 export const fetchBlogPosts = createAsyncThunk<BlogPost[]>(
   "blogPosts/fetchBlogPosts",
@@ -30,6 +30,14 @@ export const updateBlogPost = createAsyncThunk(
     return updatedPost;
   },
 );
+
+export const deleteBlogPost = createAsyncThunk(
+  "blog/deleteBlogPost",
+  async (id: string) => {
+    await deleteBlogPostApi(id);
+    return id;
+  }
+)
 
 export interface BlogState {
   blogList: BlogPost[];
@@ -61,6 +69,9 @@ export const blogSlice = createSlice({
         if (index !== -1) {
           state.blogList[index] = payload;
         }
+      })
+      .addCase(deleteBlogPost.fulfilled, (state, { payload }) => {
+        state.blogList = state.blogList.filter((post) => post.id !== payload);
       });
   },
 });

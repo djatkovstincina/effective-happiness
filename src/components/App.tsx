@@ -6,7 +6,7 @@ import ConfirmationModal from "../components/Modal/ConfirmationModal";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useTypedSelector } from "../hooks/useTypedSelector";
 import BlogPostPage from "../pages/BlogPostPage";
-import { fetchBlogPosts, selectBlogPosts } from "../redux/blog/blogSlice";
+import { deleteBlogPost,fetchBlogPosts, selectBlogPosts } from "../redux/blog/blogSlice";
 import { deleteUser, fetchUsers, selectUsers } from "../redux/user/userSlice";
 import { GlobalStyles } from "./GlobalStyles/GlobalStyles";
 import TableRow from "./Table/TableRow";
@@ -28,6 +28,8 @@ export const App = () => {
     id: number;
     name: string;
   } | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  const [selectedPostTitle, setSelectedPostTitle] = useState<string>("");
 
   const listRef = useRef<List>(null);
 
@@ -41,8 +43,14 @@ export const App = () => {
     listRef.current?.resetAfterIndex(0);
   };
 
-  const handleOpenModal = (id: number, name: string) => {
+  const handleOpenModalForUser = (id: number, name: string) => {
     setUserToDelete({ id, name });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenModalForPost = (postId: string, postTitle: string) => {
+    setSelectedPostId(postId);
+    setSelectedPostTitle(postTitle);
     setIsModalOpen(true);
   };
 
@@ -52,6 +60,13 @@ export const App = () => {
       setIsModalOpen(false);
       setExpandedUser(null);
       listRef.current?.resetAfterIndex(0);
+    }
+  };
+
+  const handleDeletePost = () => {
+    if (selectedPostId) {
+      dispatch(deleteBlogPost(selectedPostId));
+      setIsModalOpen(false);
     }
   };
 
@@ -65,7 +80,8 @@ export const App = () => {
     expandedUser,
     handleRowClick,
     blogPosts,
-    handleOpenModal,
+    handleOpenModalForUser,
+    handleOpenModalForPost,
   };
 
   return (
@@ -112,9 +128,13 @@ export const App = () => {
         </Routes>
         <ConfirmationModal
           isOpen={isModalOpen}
-          message={`Are you sure you want to delete user ${userToDelete?.name}?`}
+          message={
+            userToDelete
+              ? `Are you sure you want to delete user ${userToDelete.name}?`
+              : `Are you sure you want to delete the post "${selectedPostTitle}"?`
+          }
           onClose={() => setIsModalOpen(false)}
-          onConfirm={handleDeleteUser}
+          onConfirm={userToDelete ? handleDeleteUser : handleDeletePost}
         />
       </StyledWrapper>
     </Router>

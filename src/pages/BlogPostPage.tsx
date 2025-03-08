@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import ConfirmationModal from "../components/Modal/ConfirmationModal";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useTypedSelector } from "../hooks/useTypedSelector";
-import { selectBlogPosts, updateBlogPost } from "../redux/blog/blogSlice";
+import { deleteBlogPost,selectBlogPosts, updateBlogPost } from "../redux/blog/blogSlice";
 
 const BlogPostPage = () => {
     const { postId } = useParams();
@@ -17,6 +18,7 @@ const BlogPostPage = () => {
     const [body, setBody] = useState(post?.body || "");
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     if (!post) {
         return <h2>Blog post not found</h2>;
@@ -34,6 +36,18 @@ const BlogPostPage = () => {
         setLoading(false);
     };
 
+    const handleDeletePost = () => {
+        if (post) {
+            dispatch(deleteBlogPost(post.id));
+            setIsModalOpen(false);
+            navigate("/");
+        }
+    };
+
+    const handleOpenDeleteModal = () => {
+        setIsModalOpen(true);
+    };
+
     return (
         <div style={{ marginTop: "40px" }}>
             <button
@@ -48,14 +62,14 @@ const BlogPostPage = () => {
                     <button
                         disabled={loading}
                         onClick={handleSave}
-                        style={{ marginLeft: "24px", padding: "12px", cursor: "pointer" }}
+                        style={{ marginTop: "32px", marginLeft: "24px", padding: "12px", cursor: "pointer" }}
                         type="button"
                     >
                         {loading ? "Saving..." : "Save"}
                     </button>
                     <button
                         onClick={() => setIsEditing(false)}
-                        style={{ marginLeft: "24px", padding: "12px", cursor: "pointer" }}
+                        style={{ marginTop: "32px", marginLeft: "24px", padding: "12px", cursor: "pointer" }}
                         type="button"
                     >
                         Cancel
@@ -64,12 +78,27 @@ const BlogPostPage = () => {
             ) : (
                 <button
                     onClick={() => setIsEditing(true)}
-                    style={{ marginLeft: "24px", padding: "12px", cursor: "pointer" }}
+                    style={{ marginTop: "32px", marginLeft: "24px", padding: "12px", cursor: "pointer" }}
                     type="button"
                 >
                     Edit Post
                 </button>
             )}
+            <button
+                onClick={handleOpenDeleteModal}
+                style={{
+                    marginTop: "32px",
+                    marginLeft: "24px",
+                    padding: "12px",
+                    backgroundColor: "red",
+                    color: "white",
+                    border: "none",
+                    cursor: "pointer",
+                }}
+                type="button"
+            >
+                Delete Post
+            </button>
             {isEditing ? (
                 <>
                     <p style={{ marginBottom: "18px" }}>
@@ -131,6 +160,12 @@ const BlogPostPage = () => {
                     <p>{post.body}</p>
                 </>
             )}
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                message={`Are you sure you want to delete the post "${post.title}"?`}
+                onClose={() => setIsModalOpen(false)}
+                onConfirm={handleDeletePost}
+            />
         </div>
     );
 };

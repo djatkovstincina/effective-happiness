@@ -35,6 +35,7 @@ const ConfirmationModal = ({
                     padding: "20px",
                     borderRadius: "8px",
                     textAlign: "center",
+                    maxWidth: "430px",
                 }}
             >
                 <p style={{ marginBottom: "24px" }}>{message}</p>
