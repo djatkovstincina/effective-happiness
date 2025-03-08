@@ -25,9 +25,7 @@ export const userSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(fetchUsers.fulfilled, (state, { payload }) => {
-      // This is a workaround to avoid mutating the state
-      // state.userList.push(...payload);
-      state.userList = payload;
+      state.userList.push(...payload);
     });
   },
 });
