@@ -1,11 +1,19 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { getUsers, User } from "../../data/data";
+import { deleteUser as deleteUserApi, getUsers, User } from "../../data/data";
 import { RootState } from "../store";
 
 export const fetchUsers = createAsyncThunk<User[]>(
   "users/fetchUsers",
   async () => getUsers(),
+);
+
+export const deleteUser = createAsyncThunk(
+  "users/deleteUser",
+  async (userId: number) => {
+    await deleteUserApi(userId);
+    return userId;
+  },
 );
 
 export interface UserState {
@@ -24,9 +32,15 @@ export const userSlice = createSlice({
     // myAwesomeReducer() {}
   },
   extraReducers(builder) {
-    builder.addCase(fetchUsers.fulfilled, (state, { payload }) => {
-      state.userList.push(...payload);
-    });
+    builder
+      .addCase(fetchUsers.fulfilled, (state, { payload }) => {
+        state.userList.push(...payload);
+      })
+      .addCase(deleteUser.fulfilled, (state, action: PayloadAction<number>) => {
+        state.userList = state.userList.filter(
+          (user) => user.id !== action.payload,
+        );
+      });
   },
 });
 

@@ -19,7 +19,7 @@ export const TableHeader = styled.thead`
 
 export const Row = styled.tr`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   border-bottom: 1px solid #ddd;
 `;
 

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { getMembers, BlogPost, editBlogPost } from "../../data/data";
+import { BlogPost, editBlogPost, getMembers } from "../../data/data";
 
 export const fetchBlogPosts = createAsyncThunk<BlogPost[]>(
   "blogPosts/fetchBlogPosts",
@@ -9,11 +9,16 @@ export const fetchBlogPosts = createAsyncThunk<BlogPost[]>(
 
 export const updateBlogPost = createAsyncThunk(
   "blog/updateBlogPost",
-  async ({ id, title, body }: { id: string, title: string, body: string }, { getState }) => {
+  async (
+    { id, title, body }: { id: string; title: string; body: string },
+    { getState },
+  ) => {
     const state = getState() as { blog: BlogState };
-    const existingPost = state.blog.blogList.find(post => post.id === id);
+    const existingPost = state.blog.blogList.find((post) => post.id === id);
 
-    if (!existingPost) throw new Error("Post not found");
+    if (!existingPost) {
+      throw new Error("Post not found");
+    }
 
     const updatedPost = await editBlogPost(id, {
       title,
@@ -23,8 +28,8 @@ export const updateBlogPost = createAsyncThunk(
     });
 
     return updatedPost;
-  }
-)
+  },
+);
 
 export interface BlogState {
   blogList: BlogPost[];
@@ -42,7 +47,7 @@ export const blogSlice = createSlice({
   reducers: {
     setBlogList: (state, action: PayloadAction<BlogPost[]>) => {
       state.blogList = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -50,7 +55,9 @@ export const blogSlice = createSlice({
         state.blogList.push(...payload);
       })
       .addCase(updateBlogPost.fulfilled, (state, { payload }) => {
-        const index = state.blogList.findIndex((post) => post.id === payload.id);
+        const index = state.blogList.findIndex(
+          (post) => post.id === payload.id,
+        );
         if (index !== -1) {
           state.blogList[index] = payload;
         }
@@ -59,5 +66,5 @@ export const blogSlice = createSlice({
 });
 
 export default blogSlice.reducer;
-
-export const selectBlogPosts = (state: { blog: BlogState }) => state.blog.blogList;
+export const selectBlogPosts = (state: { blog: BlogState }) =>
+  state.blog.blogList;

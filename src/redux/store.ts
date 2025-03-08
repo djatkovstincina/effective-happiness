@@ -4,8 +4,8 @@ import {
   PreloadedState,
 } from "@reduxjs/toolkit";
 
-import userReducer from "./user/userSlice";
 import blogReduser from "./blog/blogSlice";
+import userReducer from "./user/userSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,

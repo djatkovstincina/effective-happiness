@@ -1,6 +1,12 @@
 {
   "extends": "sammy",
   "rules": {
-    "react-intl-sammy/missing-formatted-message": "off"
+    "react-intl-sammy/missing-formatted-message": "off",
+    "prettier/prettier": [
+      "off",
+      {
+        "endOfLine": "auto"
+      }
+    ]
   }
 }
