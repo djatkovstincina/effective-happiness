@@ -5,7 +5,6 @@
   "private": true,
   "scripts": {
     "start": "npx webpack serve",
-    "build": "NODE_ENV=production webpack --mode production",
     "test": "jest",
     "lint": "\"./node_modules/.bin/eslint\" . --ext js,ts,tsx"
   },
