@@ -7,30 +7,23 @@ import { useTypedSelector } from "../hooks/useTypedSelector";
 import { deleteBlogPost, fetchBlogPosts, selectBlogPosts } from "../redux/blog/blogSlice";
 import { deleteUser, fetchUsers, selectUsers } from "../redux/user/userSlice";
 
-import { GlobalStyles } from "./GlobalStyles/GlobalStyles";
-import BlogPostPage from "../pages/BlogPostPage";
+import Header from "../components/Header/Header";
 import TableRow from "./Table/TableRow";
-import {
-  Cell,
-  Row,
-  StyledWrapper,
-  Table,
-  TableHeader,
-} from "./Table/TableStyles";
+import BlogPostPage from "../pages/BlogPostPage";
 import ConfirmationModal from "../components/Modal/ConfirmationModal";
 
 export const App = () => {
   const dispatch = useAppDispatch();
+
   const users = useTypedSelector(selectUsers);
   const blogPosts = useTypedSelector(selectBlogPosts);
+
   const [expandedUser, setExpandedUser] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<{
-    id: number;
-    name: string;
-  } | null>(null);
+  const [userToDelete, setUserToDelete] = useState<{ id: number; name: string; } | null>(null);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [selectedPostTitle, setSelectedPostTitle] = useState<string>("");
+  const [modalType, setModalType] = useState<"user" | "post" | null>(null);
 
   const listRef = useRef<List>(null);
 
@@ -46,12 +39,16 @@ export const App = () => {
 
   const handleOpenModalForUser = (id: number, name: string) => {
     setUserToDelete({ id, name });
+    setSelectedPostId(null);
+    setModalType("user");
     setIsModalOpen(true);
   };
 
   const handleOpenModalForPost = (postId: string, postTitle: string) => {
     setSelectedPostId(postId);
     setSelectedPostTitle(postTitle);
+    setUserToDelete(null);
+    setModalType("post");
     setIsModalOpen(true);
   };
 
@@ -73,7 +70,7 @@ export const App = () => {
 
   const getItemSize = (index: number) => {
     const user = users[index];
-    return expandedUser === user.id ? 320 : 40;
+    return expandedUser === user.id ? 420 : 45;
   };
 
   const itemData = {
@@ -87,58 +84,58 @@ export const App = () => {
 
   return (
     <Router>
-      <StyledWrapper>
-        <GlobalStyles />
-
-        <h1>NaviPartner Tech Test</h1>
-
-        <h2>Create your app here!</h2>
-        <p>Let's get you started:</p>
+      <div className="py-6 max-w-[1440px] mx-auto">
+        <Header />
         <Routes>
           <Route
             element={
-              <Table>
-                <TableHeader>
-                  <Row>
-                    <Cell>ID</Cell>
-                    <Cell>Name</Cell>
-                    <Cell>Email</Cell>
-                    <Cell>Gender</Cell>
-                    <Cell>IP Address</Cell>
-                    <Cell>Action</Cell>
-                  </Row>
-                </TableHeader>
-                <List
-                  estimatedItemSize={40}
-                  height={600}
-                  itemCount={users.length}
-                  itemData={itemData}
-                  itemSize={getItemSize}
-                  ref={listRef}
-                  width={1440}
-                >
-                  {({ index, style }) => (
-                    <TableRow data={itemData} index={index} style={style} />
-                  )}
-                </List>
-              </Table>
+              <div className="mt-4 border border-gray-300 rounded-md overflow-hidden">
+                <table className="w-full border-collapse" aria-label="User Table">
+                  <thead>
+                    <tr className="grid grid-cols-6 bg-gray-200 border-b border-gray-300">
+                      <th scope="col" className="p-2 text-left">ID</th>
+                      <th scope="col" className="p-2 text-left">Name</th>
+                      <th scope="col" className="p-2 text-left">Email</th>
+                      <th scope="col" className="p-2 text-left">Gender</th>
+                      <th scope="col" className="p-2 text-left">IP Address</th>
+                      <th scope="col" className="p-2 text-left">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <List
+                      estimatedItemSize={45}
+                      height={600}
+                      itemCount={users.length}
+                      itemData={itemData}
+                      itemSize={getItemSize}
+                      ref={listRef}
+                      width={1440}
+                    >
+                      {({ index, style }) => (
+                        <TableRow data={itemData} index={index} style={style} />
+                      )}
+                    </List>
+                  </tbody>
+                </table>
+              </div>
             }
             path="/"
           />
           <Route element={<BlogPostPage />} path="/blog/:userId/new" />
           <Route element={<BlogPostPage />} path="/blog/:userId/:postId" />
         </Routes>
+
         <ConfirmationModal
           isOpen={isModalOpen}
           message={
-            userToDelete
+            modalType === "user" && userToDelete
               ? `Are you sure you want to delete user ${userToDelete.name}?`
               : `Are you sure you want to delete the post "${selectedPostTitle}"?`
           }
           onClose={() => setIsModalOpen(false)}
-          onConfirm={userToDelete ? handleDeleteUser : handleDeletePost}
+          onConfirm={modalType === "user" && userToDelete ? handleDeleteUser : handleDeletePost}
         />
-      </StyledWrapper>
+      </div>
     </Router>
   );
 };

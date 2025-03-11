@@ -1,11 +1,12 @@
 import React, { useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import ConfirmationModal from "../components/Modal/ConfirmationModal";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useTypedSelector } from "../hooks/useTypedSelector";
 import { addBlogPost, deleteBlogPost, selectBlogPosts, updateBlogPost } from "../redux/blog/blogSlice";
 import { selectSelectedUser } from "../redux/user/userSlice";
+
+import ConfirmationModal from "../components/Modal/ConfirmationModal";
 
 const BlogPostPage = () => {
     const { postId } = useParams();
@@ -71,101 +72,88 @@ const BlogPostPage = () => {
     };
 
     if (!post && !isNewPost) {
-        return <h2>Blog post not found</h2>;
+        return <h2 className="mt-10 text-center text-xl font-semibold">Blog post not found</h2>;
     }
 
     const buttonStyle = { padding: "12px", cursor: "pointer", marginBottom: "32px", marginRight: "24px" };
     const deleteButtonStyle = { ...buttonStyle, backgroundColor: "red", color: "white", border: "none" };
 
-    const actionButtons = isEditing ? (
-        <>
-            <button disabled={loading} onClick={handleSave} style={buttonStyle} type="button">
-                {loading ? "Saving..." : isNewPost ? "Create Post" : "Save"}
-            </button>
-            <button onClick={handleCancel} style={buttonStyle} type="button">
-                Cancel
-            </button>
-        </>
-    ) : (
-        <button onClick={() => setIsEditing(true)} style={buttonStyle} type="button">
-            Edit Post
-        </button>
-    );
-
-    const deleteButton = !isNewPost && !isEditing && (
-        <button onClick={handleOpenDeleteModal} style={deleteButtonStyle} type="button">
-            Delete Post
-        </button>
-    );
-
     return (
-        <div style={{ marginTop: "40px" }}>
-            <button onClick={() => navigate(-1)} style={buttonStyle} type="button">
+        <div className="mt-10 mx-auto max-w-3xl p-6">
+            <button
+                onClick={() => navigate(-1)}
+                className="px-4 py-2 mb-8 bg-gray-300 hover:bg-gray-400 text-sm rounded cursor-pointer"
+            >
                 Back to Users list
             </button>
-            {actionButtons}
-            {deleteButton}
+
             {isEditing ? (
                 <>
-                    <p style={{ marginBottom: "18px" }}>
-                        <strong>Author ID:</strong> {[post?.userId]}
+                    <p className="mb-4 font-semibold">
+                        <strong>Author ID:</strong> {post?.userId}
                     </p>
-                    <div style={{ display: "block" }}>
-                        <label
-                            htmlFor="title"
-                            style={{ display: "block", width: "100%", marginBottom: "4px" }}
-                        >
-                            Title
-                        </label>
+
+                    <div className="mb-6">
+                        <label htmlFor="title" className="block mb-2 font-medium">Title</label>
                         <input
-                            aria-label="Edit post title"
                             id="title"
                             name="title"
-                            onChange={(event) => setTitle(event.target.value)}
-                            style={{
-                                display: "block",
-                                width: "100%",
-                                padding: "8px",
-                                marginBottom: "12px",
-                                border: "1px solid #ddd",
-                            }}
                             type="text"
                             value={title}
+                            onChange={(event) => setTitle(event.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
-                    <div style={{ display: "block" }}>
-                        <label
-                            htmlFor="body"
-                            style={{ display: "block", width: "100%", marginBottom: "4px" }}
-                        >
-                            Post Body
-                        </label>
+
+                    <div className="mb-6">
+                        <label htmlFor="body" className="block mb-2 font-medium">Post Body</label>
                         <textarea
-                            aria-label="Edit post body"
                             id="body"
                             name="body"
-                            onChange={(event) => setBody(event.target.value)}
-                            style={{
-                                display: "block",
-                                width: "100%",
-                                height: "200px",
-                                padding: "8px",
-                                marginBottom: "12px",
-                                border: "1px solid #ddd",
-                            }}
                             value={body}
+                            onChange={(event) => setBody(event.target.value)}
+                            className="w-full h-40 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
+
+                    <button
+                        disabled={loading}
+                        onClick={handleSave}
+                        className={`px-4 py-2 mr-4 text-sm rounded cursor-pointer ${loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600 text-white"}`}
+                    >
+                        {loading ? "Saving..." : isNewPost ? "Create Post" : "Save"}
+                    </button>
+                    <button
+                        onClick={handleCancel}
+                        className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded cursor-pointer"
+                    >
+                        Cancel
+                    </button>
                 </>
             ) : (
                 <>
-                    <h1 style={{ marginBottom: "24px" }}>{post?.title}</h1>
-                    <p style={{ marginBottom: "18px" }}>
+                    <h1 className="mb-6 text-2xl font-bold">{post?.title}</h1>
+                    <p className="mb-4 text-gray-600">
                         <strong>Author ID:</strong> {post?.userId}
                     </p>
-                    <p>{post?.body}</p>
+                    <p className="mb-6">{post?.body}</p>
+                    <button
+                        onClick={() => setIsEditing(true)}
+                        className="px-4 py-2 mr-4 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded cursor-pointer"
+                    >
+                        Edit Post
+                    </button>
+                    {!isNewPost && (
+                        <button
+                            onClick={handleOpenDeleteModal}
+                            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm rounded cursor-pointer"
+                        >
+                            Delete Post
+                        </button>
+                    )}
                 </>
             )}
+
             <ConfirmationModal
                 isOpen={isModalOpen}
                 message={`Are you sure you want to delete the post "${post?.title}"?`}

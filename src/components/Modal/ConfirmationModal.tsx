@@ -16,39 +16,20 @@ const ConfirmationModal = ({
     }
 
     return (
-        <div
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                backgroundColor: "rgba(0,0,0,0.5)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
-        >
-            <div
-                style={{
-                    backgroundColor: "white",
-                    padding: "20px",
-                    borderRadius: "8px",
-                    textAlign: "center",
-                    maxWidth: "430px",
-                }}
-            >
-                <p style={{ marginBottom: "24px" }}>{message}</p>
+
+        <div className="fixed top-0 left-0 w-full h-full bg-black/60 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg text-center max-w-sm">
+                <p className="mb-6">{message}</p>
                 <button
                     onClick={onConfirm}
-                    style={{ marginRight: "10px", padding: "8px" }}
+                    className="mr-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                     type="button"
                 >
                     Confirm
                 </button>
                 <button
                     onClick={onClose}
-                    style={{ padding: "8px" }}
+                    className="p-2 bg-gray-500 text-white rounded hover:bg-gray-600"
                     type="button"
                 >
                     Cancel

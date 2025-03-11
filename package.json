@@ -5,18 +5,22 @@
   "private": true,
   "scripts": {
     "start": "npx webpack serve",
+    "build": "NODE_ENV=production webpack --mode production",
     "test": "jest",
     "lint": "\"./node_modules/.bin/eslint\" . --ext js,ts,tsx"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
+    "@tailwindcss/postcss": "^4.0.12",
+    "@tanstack/react-table": "^8.21.2",
     "@types/react-window": "^1.8.8",
+    "postcss": "^8.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^7.3.0",
     "react-window": "^1.8.11",
-    "styled-components": "^5.3.6"
+    "tailwindcss": "^4.0.12"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.8",
@@ -30,14 +34,18 @@
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@types/styled-components": "^5.1.26",
+    "autoprefixer": "^10.4.21",
     "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^7.1.2",
     "eslint": "^8.25.0",
     "eslint-config-sammy": "^2.3.0",
     "eslint-plugin-prettier": "^4.2.1",
     "fork-ts-checker-webpack-plugin": "^7.2.13",
     "jest": "^29.1.2",
     "jest-environment-jsdom": "^29.1.2",
+    "postcss-loader": "^8.1.1",
     "react-refresh": "^0.14.0",
+    "style-loader": "^4.0.0",
     "swc-loader": "^0.2.3",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.4",

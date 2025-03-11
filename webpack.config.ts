@@ -12,11 +12,11 @@ interface Configuration extends WebpackConfiguration {
 const WEBPACKDEV_PORT = 3000;
 
 const config = (): Configuration => {
-  const isDevelopment = true;
+  const isDevelopment = process.env.NODE_ENV !== "production";
 
   return {
-    mode: "development",
-    devtool: "inline-source-map",
+    mode: isDevelopment ? "development" : "production",
+    devtool: isDevelopment ? "inline-source-map" : "source-map",
     entry: { bundle: "./src/entry" },
     module: {
       rules: [
@@ -36,6 +36,14 @@ const config = (): Configuration => {
               },
             },
           },
+        },
+        {
+          test: /\.css$/,
+          use: [
+            "style-loader",
+            "css-loader",
+            "postcss-loader",
+          ],
         },
       ],
     },
@@ -60,9 +68,15 @@ const config = (): Configuration => {
       extensions: [".tsx", ".ts", ".js"],
     },
     output: {
-      path: path.join(__dirname, "build"),
-      filename: "[name].js",
-      publicPath: "/",
+      path: path.join(__dirname, "dist"),
+      filename: "[name].[contenthash].js",
+      clean: true,
+    },
+    optimization: {
+      minimize: !isDevelopment,
+      splitChunks: {
+        chunks: "all",
+      },
     },
     plugins: [
       new CopyPlugin({
