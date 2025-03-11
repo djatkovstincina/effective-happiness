@@ -1,7 +1,9 @@
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { BlogPost, User } from "../../data/data";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { setSelectedUser } from "../../redux/user/userSlice";
 import { Cell, Row } from "./TableStyles";
 
 interface ItemData {
@@ -14,19 +16,20 @@ interface ItemData {
 }
 
 const TableRow = memo(
-    ({
-        index,
-        style,
-        data,
-    }: {
-        index: number;
-        style: React.CSSProperties;
-        data: ItemData;
-    }) => {
-        const { users, expandedUser, handleRowClick, blogPosts, handleOpenModalForUser, handleOpenModalForPost } =
-            data;
+    ({ index, style, data }: { index: number; style: React.CSSProperties; data: ItemData }) => {
+        const { users, expandedUser, handleRowClick, blogPosts, handleOpenModalForUser, handleOpenModalForPost } = data;
         const user = users[index];
         const navigate = useNavigate();
+        const dispatch = useAppDispatch();
+
+        const handleAddBlogPost = useCallback(() => {
+            dispatch(setSelectedUser(user));
+            navigate(`/blog/${user.id}/new`);
+        }, [dispatch, navigate, user]);
+
+        const handleEventPropagation = (event: React.MouseEvent) => {
+            event.stopPropagation();
+        };
 
         const rowStyle =
             index % 2 === 0
@@ -53,16 +56,21 @@ const TableRow = memo(
                     <Cell>
                         <button
                             onClick={(event) => {
-                                event.stopPropagation();
-                                handleOpenModalForUser(
-                                    user.id,
-                                    `${user.first_name} ${user.last_name}`,
+                                handleEventPropagation(event);
+                                handleOpenModalForUser(user.id, `${user.first_name} ${user.last_name}`,
                                 );
                             }}
-                            style={{ padding: "2px 8px", cursor: "pointer", color: "red" }}
+                            style={{ padding: "2px 8px", cursor: "pointer", backgroundColor: "red", color: "white" }}
                             type="button"
                         >
-                            Delete
+                            Delete User
+                        </button>
+                        <button
+                            onClick={handleAddBlogPost}
+                            style={{ marginLeft: "12px", padding: "2px 8px", cursor: "pointer", color: "white", backgroundColor: "green" }}
+                            type="button"
+                        >
+                            Add Blog
                         </button>
                     </Cell>
                     {isExpanded ? (
@@ -71,6 +79,7 @@ const TableRow = memo(
                                 backgroundColor: "#fff",
                                 padding: "10px",
                                 gridColumn: "span 6",
+                                overflowY: "auto"
                             }}
                         >
                             <h3>{user.first_name}'s blog posts:</h3>
@@ -80,8 +89,8 @@ const TableRow = memo(
                                         <li
                                             key={post.id}
                                             onClick={(event) => {
-                                                event.stopPropagation();
-                                                navigate(`/blog/${post.id}`);
+                                                handleEventPropagation(event);
+                                                navigate(`/blog/${user.id}/${post.id}`);
                                             }}
                                             style={{ padding: "10px" }}
                                         >
@@ -89,10 +98,10 @@ const TableRow = memo(
                                             <p>{post.body.substring(0, 100)}...</p>
                                             <button
                                                 onClick={(event) => {
-                                                    event.stopPropagation();
+                                                    handleEventPropagation(event);
                                                     handleOpenModalForPost(post.id, post.title);
                                                 }}
-                                                style={{ marginTop: "8px", padding: "2px 8px", color: "red", cursor: "pointer" }}
+                                                style={{ marginTop: "8px", padding: "2px 8px", backgroundColor: "red", color: "white", cursor: "pointer" }}
                                                 type="button"
                                             >Delete Post</button>
                                         </li>

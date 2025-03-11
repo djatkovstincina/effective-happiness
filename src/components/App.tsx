@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { VariableSizeList as List } from "react-window";
 
-import ConfirmationModal from "../components/Modal/ConfirmationModal";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useTypedSelector } from "../hooks/useTypedSelector";
-import BlogPostPage from "../pages/BlogPostPage";
-import { deleteBlogPost,fetchBlogPosts, selectBlogPosts } from "../redux/blog/blogSlice";
+import { deleteBlogPost, fetchBlogPosts, selectBlogPosts } from "../redux/blog/blogSlice";
 import { deleteUser, fetchUsers, selectUsers } from "../redux/user/userSlice";
+
 import { GlobalStyles } from "./GlobalStyles/GlobalStyles";
+import BlogPostPage from "../pages/BlogPostPage";
 import TableRow from "./Table/TableRow";
 import {
   Cell,
@@ -17,6 +17,7 @@ import {
   Table,
   TableHeader,
 } from "./Table/TableStyles";
+import ConfirmationModal from "../components/Modal/ConfirmationModal";
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -124,7 +125,8 @@ export const App = () => {
             }
             path="/"
           />
-          <Route element={<BlogPostPage />} path="/blog/:postId" />
+          <Route element={<BlogPostPage />} path="/blog/:userId/new" />
+          <Route element={<BlogPostPage />} path="/blog/:userId/:postId" />
         </Routes>
         <ConfirmationModal
           isOpen={isModalOpen}

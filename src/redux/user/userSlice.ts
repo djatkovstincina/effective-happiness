@@ -18,18 +18,21 @@ export const deleteUser = createAsyncThunk(
 
 export interface UserState {
   userList: User[];
+  selectedUser: User | null;
 }
 
 const initialState = {
   userList: [],
+  selectedUser: null,
 } as UserState;
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    // TODO: Add any needed reducers here
-    // myAwesomeReducer() {}
+    setSelectedUser: (state, action: PayloadAction<User>) => {
+      state.selectedUser = action.payload;
+    }
   },
   extraReducers(builder) {
     builder
@@ -44,9 +47,9 @@ export const userSlice = createSlice({
   },
 });
 
-// TODO: Export any redux actions if needed
-// export const { myAwesomeReducer } = userSlice.actions;
+export const { setSelectedUser } = userSlice.actions;
 
 export default userSlice.reducer;
 
 export const selectUsers = (state: RootState) => state.user.userList;
+export const selectSelectedUser = (state: RootState) => state.user.selectedUser;

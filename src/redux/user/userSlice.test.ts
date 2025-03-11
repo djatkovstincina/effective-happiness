@@ -1,5 +1,5 @@
 import { User } from "../../data/data";
-import reducer, { fetchUsers, UserState } from "../user/userSlice";
+import reducer, { fetchUsers, setSelectedUser, UserState } from "../user/userSlice";
 
 const TestUsers: User[] = [
   {
@@ -24,6 +24,7 @@ describe("usersSlice", () => {
   it("should return the initial state", () => {
     expect(reducer(undefined, { type: undefined })).toEqual({
       userList: [],
+      selectedUser: null,
     });
   });
 
@@ -32,10 +33,25 @@ describe("usersSlice", () => {
 
     const previousState: UserState = {
       userList: [],
+      selectedUser: null
     };
 
     expect(reducer(previousState, action)).toEqual({
       userList: TestUsers,
+      selectedUser: null,
     });
   });
+
+  it("sets the selected user", () => {
+    const user = { id: 1, first_name: "John", last_name: "Doe", email: "john@example.com", gender: "male", ip_address: "127.0.0.1" };
+
+    const action = { type: setSelectedUser.type, payload: user };
+    const previousState: UserState = { userList: [user], selectedUser: null };
+
+    expect(reducer(previousState, action)).toEqual({
+      userList: [user],
+      selectedUser: user,
+    });
+  });
+
 });

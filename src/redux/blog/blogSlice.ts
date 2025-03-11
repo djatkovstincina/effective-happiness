@@ -1,10 +1,35 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { BlogPost, deleteBlogPost as deleteBlogPostApi,editBlogPost, getMembers } from "../../data/data";
+import { addBlogPost as addBlogPostApi, BlogPost, deleteBlogPost as deleteBlogPostApi, editBlogPost, getMembers } from "../../data/data";
+import { UserState } from "../user/userSlice";
 
 export const fetchBlogPosts = createAsyncThunk<BlogPost[]>(
   "blogPosts/fetchBlogPosts",
   async () => getMembers(),
+);
+
+export const addBlogPost = createAsyncThunk(
+  "blog/addBlogPost",
+  async (
+    { id, title, body, userId }: { id: string, title: string, body: string, userId: number },
+    { getState }
+  ) => {
+    const state = getState() as { user: UserState };
+    const existingUser = state.user.userList.find((user) => user.id === userId);
+
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
+    const newPost = await addBlogPostApi({
+      id,
+      title,
+      body,
+      userId: existingUser.id,
+      datePosted: new Date().toISOString(),
+    });
+    return newPost;
+  }
 );
 
 export const updateBlogPost = createAsyncThunk(
@@ -61,6 +86,9 @@ export const blogSlice = createSlice({
     builder
       .addCase(fetchBlogPosts.fulfilled, (state, { payload }) => {
         state.blogList.push(...payload);
+      })
+      .addCase(addBlogPost.fulfilled, (state, { payload }) => {
+        state.blogList.push(payload);
       })
       .addCase(updateBlogPost.fulfilled, (state, { payload }) => {
         const index = state.blogList.findIndex(
