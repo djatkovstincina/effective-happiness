@@ -1,16 +1,9 @@
 import React from "react";
 
-const ConfirmationModal = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    message,
-}: {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    message: string;
-}) => {
+import { ConfirmationModalProps } from "../../types/ModalTypes"
+
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, onConfirm, message }) => {
+
     if (!isOpen) {
         return null;
     }
@@ -21,15 +14,15 @@ const ConfirmationModal = ({
             <div className="bg-white p-6 rounded-lg text-center max-w-sm">
                 <p className="mb-6">{message}</p>
                 <button
-                    onClick={onConfirm}
                     className="mr-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    onClick={onConfirm}
                     type="button"
                 >
                     Confirm
                 </button>
                 <button
-                    onClick={onClose}
                     className="p-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                    onClick={onClose}
                     type="button"
                 >
                     Cancel

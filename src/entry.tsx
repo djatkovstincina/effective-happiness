@@ -1,11 +1,11 @@
+import "../src/styles/index.css";
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 
 import { App } from "./components/App";
 import { setupStore } from "./redux/store";
-
-import "../src/styles/index.css";
 
 const domContainer = document.querySelector("#app");
 

@@ -1,12 +1,11 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import ConfirmationModal from "../components/Modal/ConfirmationModal";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useTypedSelector } from "../hooks/useTypedSelector";
 import { addBlogPost, deleteBlogPost, selectBlogPosts, updateBlogPost } from "../redux/blog/blogSlice";
 import { selectSelectedUser } from "../redux/user/userSlice";
-
-import ConfirmationModal from "../components/Modal/ConfirmationModal";
 
 const BlogPostPage = () => {
     const { postId } = useParams();
@@ -72,17 +71,26 @@ const BlogPostPage = () => {
     };
 
     if (!post && !isNewPost) {
-        return <h2 className="mt-10 text-center text-xl font-semibold">Blog post not found</h2>;
-    }
+        return (
+            <div className="mx-auto max-w-3xl p-6">
 
-    const buttonStyle = { padding: "12px", cursor: "pointer", marginBottom: "32px", marginRight: "24px" };
-    const deleteButtonStyle = { ...buttonStyle, backgroundColor: "red", color: "white", border: "none" };
+                <button
+                    className="px-4 py-2 my-8 mx-auto bg-gray-300 hover:bg-gray-400 text-sm rounded cursor-pointer"
+                    onClick={() => navigate(-1)}
+                    type="button"
+                >
+                    Back to Users list
+                </button>
+            </div>
+        )
+    }
 
     return (
         <div className="mt-10 mx-auto max-w-3xl p-6">
             <button
-                onClick={() => navigate(-1)}
                 className="px-4 py-2 mb-8 bg-gray-300 hover:bg-gray-400 text-sm rounded cursor-pointer"
+                onClick={() => navigate(-1)}
+                type="button"
             >
                 Back to Users list
             </button>
@@ -90,42 +98,44 @@ const BlogPostPage = () => {
             {isEditing ? (
                 <>
                     <p className="mb-4 font-semibold">
-                        <strong>Author ID:</strong> {post?.userId}
+                        <strong>Author:</strong> {selectedUser?.first_name} {selectedUser?.last_name}
                     </p>
 
                     <div className="mb-6">
-                        <label htmlFor="title" className="block mb-2 font-medium">Title</label>
+                        <label className="block mb-2 font-medium" htmlFor="title">Title</label>
                         <input
+                            className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                             id="title"
                             name="title"
+                            onChange={(event) => setTitle(event.target.value)}
                             type="text"
                             value={title}
-                            onChange={(event) => setTitle(event.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 
                     <div className="mb-6">
-                        <label htmlFor="body" className="block mb-2 font-medium">Post Body</label>
+                        <label className="block mb-2 font-medium" htmlFor="body">Post Body</label>
                         <textarea
+                            className="w-full h-40 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                             id="body"
                             name="body"
-                            value={body}
                             onChange={(event) => setBody(event.target.value)}
-                            className="w-full h-40 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                            value={body}
                         />
                     </div>
 
                     <button
+                        className={`px-4 py-2 mr-4 text-sm rounded cursor-pointer ${loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600 text-white"}`}
                         disabled={loading}
                         onClick={handleSave}
-                        className={`px-4 py-2 mr-4 text-sm rounded cursor-pointer ${loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600 text-white"}`}
+                        type="button"
                     >
                         {loading ? "Saving..." : isNewPost ? "Create Post" : "Save"}
                     </button>
                     <button
-                        onClick={handleCancel}
                         className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded cursor-pointer"
+                        onClick={handleCancel}
+                        type="button"
                     >
                         Cancel
                     </button>
@@ -138,19 +148,19 @@ const BlogPostPage = () => {
                     </p>
                     <p className="mb-6">{post?.body}</p>
                     <button
-                        onClick={() => setIsEditing(true)}
                         className="px-4 py-2 mr-4 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded cursor-pointer"
+                        onClick={() => setIsEditing(true)}
+                        type="button"
                     >
                         Edit Post
                     </button>
-                    {!isNewPost && (
-                        <button
-                            onClick={handleOpenDeleteModal}
-                            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm rounded cursor-pointer"
-                        >
-                            Delete Post
-                        </button>
-                    )}
+                    <button
+                        className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm rounded cursor-pointer"
+                        onClick={handleOpenDeleteModal}
+                        type="button"
+                    >
+                        Delete Post
+                    </button>
                 </>
             )}
 
