@@ -14,6 +14,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
             <div className="bg-white p-6 rounded-lg text-center max-w-sm">
                 <p className="mb-6">{message}</p>
                 <button
+                    aria-label="Confirm"
                     className="mr-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                     onClick={onConfirm}
                     type="button"
@@ -21,6 +22,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
                     Confirm
                 </button>
                 <button
+                    aria-label="Cancel"
                     className="p-2 bg-gray-500 text-white rounded hover:bg-gray-600"
                     onClick={onClose}
                     type="button"

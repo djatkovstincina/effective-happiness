@@ -195,15 +195,17 @@ const Table: React.FC<TableProps> = ({ users, blogPosts, expandedUser, handleRow
             </table>
             <div className="mt-2 p-2 flex justify-between">
                 <button
+                    aria-label="Previous"
                     className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
                     disabled={page === 0}
                     onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
                     type="button"
-                >
+                    >
                     Previous
                 </button>
                 <span>Page {page + 1} of {Math.ceil(filteredUsers.length / pageSize)}</span>
                 <button
+                    aria-label="Next"
                     className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
                     disabled={(page + 1) * pageSize >= filteredUsers.length}
                     onClick={() => setPage((prev) => (prev + 1 < Math.ceil(filteredUsers.length / pageSize) ? prev + 1 : prev))}
