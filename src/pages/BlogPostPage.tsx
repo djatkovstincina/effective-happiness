@@ -5,7 +5,7 @@ import ConfirmationModal from "../components/Modal/ConfirmationModal";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useTypedSelector } from "../hooks/useTypedSelector";
 import { addBlogPost, deleteBlogPost, selectBlogPosts, updateBlogPost } from "../redux/blog/blogSlice";
-import { selectUsers, selectSelectedUser } from "../redux/user/userSlice";
+import { selectSelectedUser, selectUsers } from "../redux/user/userSlice";
 
 const BlogPostPage = () => {
     const { postId } = useParams();
@@ -20,7 +20,7 @@ const BlogPostPage = () => {
     
     const isNewPost = postId === undefined;
 
-    const user = isNewPost ? selectedUser : users.find((user) => user.id === post?.userId);
+    const postUser = isNewPost ? selectedUser : users.find((user) => user.id === post?.userId);
         
     const [title, setTitle] = useState(post?.title || "");
     const [body, setBody] = useState(post?.body || "");
@@ -31,13 +31,13 @@ const BlogPostPage = () => {
     const handleSave = useCallback(async () => {
         setLoading(true);
         try {
-            if (isNewPost && user) {
+            if (isNewPost && postUser) {
                 if (!title || !body) {
                     alert('Please fill the title and the body text fields.');
                     setLoading(false);
                     return;
                 }
-                await dispatch(addBlogPost({ id: Date.now().toString(), title, body, userId: user.id })).unwrap();
+                await dispatch(addBlogPost({ id: Date.now().toString(), title, body, userId: postUser.id })).unwrap();
             } else {
                 if (!post?.id) {
                     // eslint-disable-next-line no-console
@@ -53,7 +53,7 @@ const BlogPostPage = () => {
             console.error("Failed to update post:", error);
         }
         setLoading(false);
-    }, [dispatch, navigate, isNewPost, user, title, body, post?.id]);
+    }, [dispatch, navigate, isNewPost, postUser, title, body, post?.id]);
 
     const handleCancel = useCallback(() => {
         setIsEditing(false);
@@ -88,7 +88,7 @@ const BlogPostPage = () => {
             {isEditing ? (
                 <>
                     <p className="mb-4 font-semibold">
-                        <strong>Author:</strong> {user?.first_name} {user?.last_name}
+                        <strong>Author:</strong> {postUser?.first_name} {postUser?.last_name}
                     </p>
 
                     <div className="mb-6">
@@ -140,7 +140,7 @@ const BlogPostPage = () => {
                 <>
                     <h1 className="mb-6 text-2xl font-bold">{post?.title}</h1>
                     <p className="mb-4 text-gray-600">
-                        <strong>Author:</strong> {user?.first_name} {user?.last_name}
+                        <strong>Author:</strong> {postUser?.first_name} {postUser?.last_name}
                     </p>
                     <p className="mb-6">{post?.body}</p>
                     <button
