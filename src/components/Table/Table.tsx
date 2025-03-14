@@ -170,7 +170,10 @@ const Table: React.FC<TableProps> = ({ users, blogPosts, expandedUser, handleRow
                                                             <button
                                                                 aria-label={`Delete post titled ${post.title}`}
                                                                 className="mt-2 px-3 py-1 bg-red-500 text-white text-xs sm:text-sm rounded hover:bg-red-600 cursor-pointer"
-                                                                onClick={() => handleOpenModalForPost(post.id, post.title)}
+                                                                onClick={(event) => {
+                                                                    handleEventPropagation(event);
+                                                                    handleOpenModalForPost(post.id, post.title)}
+                                                                }
                                                                 onKeyDown={(event) => {
                                                                     if (event.key === "Enter" || event.key === " ") {
                                                                         handleEventPropagation(event);
