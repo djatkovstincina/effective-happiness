@@ -47,6 +47,7 @@ export const App = () => {
         </Routes>
 
         <ConfirmationModal
+          aria-live="assertive"
           isOpen={isModalOpen}
           message={
             modalType === "user" && userToDelete

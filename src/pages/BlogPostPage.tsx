@@ -70,24 +70,10 @@ const BlogPostPage = () => {
         setIsModalOpen(true);
     };
 
-    if (!post && !isNewPost) {
-        return (
-            <div className="mx-auto max-w-3xl p-6">
-
-                <button
-                    className="px-4 py-2 my-8 mx-auto bg-gray-300 hover:bg-gray-400 text-sm rounded cursor-pointer"
-                    onClick={() => navigate(-1)}
-                    type="button"
-                >
-                    Back to Users list
-                </button>
-            </div>
-        )
-    }
-
     return (
         <div className="mt-10 mx-auto max-w-3xl p-6">
             <button
+                aria-label="Back to Users list"
                 className="px-4 py-2 mb-8 bg-gray-300 hover:bg-gray-400 text-sm rounded cursor-pointer"
                 onClick={() => navigate(-1)}
                 type="button"
@@ -104,6 +90,7 @@ const BlogPostPage = () => {
                     <div className="mb-6">
                         <label className="block mb-2 font-medium" htmlFor="title">Title</label>
                         <input
+                            aria-describedby="title-desc"
                             className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                             id="title"
                             name="title"
@@ -111,20 +98,24 @@ const BlogPostPage = () => {
                             type="text"
                             value={title}
                         />
+                        <p className="text-sm text-gray-500" id="title-desc">Enter the blog post title.</p>
                     </div>
 
                     <div className="mb-6">
                         <label className="block mb-2 font-medium" htmlFor="body">Post Body</label>
                         <textarea
+                            aria-describedby="body-desc"
                             className="w-full h-40 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                             id="body"
                             name="body"
                             onChange={(event) => setBody(event.target.value)}
                             value={body}
                         />
+                        <p className="text-sm text-gray-500" id="body-desc">Enter the blog post text.</p>
                     </div>
 
                     <button
+                        aria-label={loading ? "Saving..." : isNewPost ? "Create Post" : "Save"}
                         className={`px-4 py-2 mr-4 text-sm rounded cursor-pointer ${loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600 text-white"}`}
                         disabled={loading}
                         onClick={handleSave}
@@ -133,6 +124,7 @@ const BlogPostPage = () => {
                         {loading ? "Saving..." : isNewPost ? "Create Post" : "Save"}
                     </button>
                     <button
+                        aria-label="Cancel"
                         className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded cursor-pointer"
                         onClick={handleCancel}
                         type="button"
@@ -148,6 +140,7 @@ const BlogPostPage = () => {
                     </p>
                     <p className="mb-6">{post?.body}</p>
                     <button
+                        aria-label="Edit Post"
                         className="px-4 py-2 mr-4 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded cursor-pointer"
                         onClick={() => setIsEditing(true)}
                         type="button"
@@ -155,6 +148,7 @@ const BlogPostPage = () => {
                         Edit Post
                     </button>
                     <button
+                        aria-label="Delete Post"
                         className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm rounded cursor-pointer"
                         onClick={handleOpenDeleteModal}
                         type="button"
@@ -165,6 +159,7 @@ const BlogPostPage = () => {
             )}
 
             <ConfirmationModal
+                aria-live="assertive"
                 isOpen={isModalOpen}
                 message={`Are you sure you want to delete the post "${post?.title}"?`}
                 onClose={() => setIsModalOpen(false)}

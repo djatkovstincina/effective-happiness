@@ -27,7 +27,7 @@ const Table: React.FC<TableProps> = ({ users, blogPosts, expandedUser, handleRow
         setPage(0);
     }, [filter]);
 
-    const handleEventPropagation = (event: React.MouseEvent) => {
+    const handleEventPropagation = (event: React.MouseEvent | React.KeyboardEvent) => {
         event.stopPropagation();
     };
 
@@ -47,6 +47,7 @@ const Table: React.FC<TableProps> = ({ users, blogPosts, expandedUser, handleRow
                 header: "Actions",
                 cell: ({ row }) => (
                     <button
+                        aria-label={`Delete user ${row.original.first_name} ${row.original.last_name}`}
                         className="px-2 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 cursor-pointer"
                         onClick={(event) => {
                             handleEventPropagation(event);
@@ -71,25 +72,26 @@ const Table: React.FC<TableProps> = ({ users, blogPosts, expandedUser, handleRow
     return (
         <div className="mt-4 border border-gray-300 rounded-md overflow-hidden">
             <div className="p-2 flex justify-center items-center">
-                <label htmlFor="search">
+                <label className="sr-only" htmlFor="search" id="search-label">
                     Search users by name or email
                 </label>
                 <input
-                    name="search"
-                    id="search"
+                    aria-labelledby="search-label"
                     className="ml-4 p-2 border border-gray-300 rounded-md"
+                    id="search"
+                    name="search"
                     onChange={(event) => setFilter(event.target.value)}
                     placeholder="Search users..."
                     type="text"
                     value={filter}
                 />
             </div>
-            <table className="w-full border-collapse table-auto">
+            <table className="w-full border-collapse table-auto" role="table">
                 <thead className="bg-gray-200 border-b border-gray-300">
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id}>
+                        <tr key={headerGroup.id} role="row">
                             {headerGroup.headers.map((header) => (
-                                <th className="p-2 text-left" key={header.id}>
+                                <th className="p-2 text-left" key={header.id} role="columnheader" scope="col">
                                     {flexRender(header.column.columnDef.header, header.getContext())}
                                 </th>
                             ))}
@@ -108,12 +110,20 @@ const Table: React.FC<TableProps> = ({ users, blogPosts, expandedUser, handleRow
                         return (
                             <React.Fragment key={row.id}>
                                 <tr
+                                    aria-label={`User ${user.first_name} ${user.last_name}`}
                                     className={` border-b border-gray-200 cursor-pointer ${row.original.id % 2 === 0 ? "bg-gray-100" : "bg-white"
                                         }`}
                                     onClick={() => handleRowClick(user.id)}
+                                    onKeyDown={(event) => {
+                                        if (event.key === "Enter" || event.key === " ") {
+                                            handleRowClick(user.id);
+                                        }
+                                    }}
+                                    role="row"
+                                    tabIndex={0}
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <td className="p-2" key={cell.id}>
+                                        <td className="p-2" key={cell.id} role="cell">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>
                                     ))}
@@ -125,8 +135,10 @@ const Table: React.FC<TableProps> = ({ users, blogPosts, expandedUser, handleRow
                                             <div className="flex items-center mb-2">
                                                 <h3 className="text-lg font-semibold">{user.first_name}'s Blog Posts</h3>
                                                 <button
+                                                    aria-label={`Add Blog for user ${user.first_name} ${user.last_name}`}
                                                     className="ml-3 px-2 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 cursor-pointer"
                                                     onClick={handleAddBlogPost}
+                                                    tabIndex={0}
                                                     type="button"
                                                 >
                                                     + Add Blog
@@ -137,19 +149,35 @@ const Table: React.FC<TableProps> = ({ users, blogPosts, expandedUser, handleRow
                                                     .filter((post) => post.userId === user.id)
                                                     .map((post) => (
                                                         <div
+                                                            aria-label={`Open blog post titled ${post.title}`}
                                                             className="p-4 bg-gray-100 rounded shadow cursor-pointer hover:bg-gray-200"
                                                             key={post.id}
                                                             onClick={(event) => {
                                                                 handleEventPropagation(event);
                                                                 navigate(`/blog/${user.id}/${post.id}`);
                                                             }}
+                                                            onKeyDown={(event) => {
+                                                                if (event.key === "Enter" || event.key === " ") {
+                                                                    handleEventPropagation(event);
+                                                                    navigate(`/blog/${user.id}/${post.id}`);
+                                                                }
+                                                            }}
+                                                            tabIndex={0}
                                                         >
                                                             <h4 className="font-semibold text-base mb-2">{post.title.substring(0, 30)}...</h4>
                                                             <p className="text-sm text-gray-700 mb-2"><i>Author: {user.first_name} {user.last_name}</i></p>
                                                             <p className="text-sm text-gray-700 mb-2">{post.body.substring(0, 100)}...</p>
                                                             <button
+                                                                aria-label={`Delete post titled ${post.title}`}
                                                                 className="mt-2 px-3 py-1 bg-red-500 text-white text-xs sm:text-sm rounded hover:bg-red-600 cursor-pointer"
                                                                 onClick={() => handleOpenModalForPost(post.id, post.title)}
+                                                                onKeyDown={(event) => {
+                                                                    if (event.key === "Enter" || event.key === " ") {
+                                                                        handleEventPropagation(event);
+                                                                        handleOpenModalForPost(post.id, post.title);
+                                                                    }
+                                                                }}
+                                                                role="button"
                                                                 type="button"
                                                             >
                                                                 Delete Post
